@@ -83,9 +83,9 @@ if st.button("Train Models"):
         # === Metrics ===
         auc = roc_auc_score(y_test, prob)
         acc = accuracy_score(y_test, pred)
-        prec = precision_score(y_test, pred, zero_division=0)
-        rec = recall_score(y_test, pred)
-        f1 = f1_score(y_test, pred)
+        prec = precision_score(y_test,pred,average="weighted",zero_division=0)
+        rec = recall_score(y_test,pred,average="weighted",zero_division=0)
+        f1 = f1_score(y_test,pred,average="weighted",zero_division=0)
 
         # === KS Statistic (Calculated for EVERY model) ===
         ks_df = pd.DataFrame({"target": y_test, "score": prob})
