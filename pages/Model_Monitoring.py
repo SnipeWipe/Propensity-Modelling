@@ -28,6 +28,10 @@ X_train = st.session_state[
 y_train = st.session_state[
     "y_train"
 ]
+
+y_train = y_train.map({'no': 0, 'yes': 1})
+y_test = y_test.map({'no': 0, 'yes': 1})
+
 st.success(
     f"Current Best Model: {best_model_name}"
 )
