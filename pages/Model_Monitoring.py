@@ -192,7 +192,7 @@ if "tuned_model" in st.session_state:
         f"_{timestamp}.pkl"
     )
     model_bytes = joblib.dump(
-    grid.best_estimator_,
+    st.session_state["tuned_model"],
     model_filename)
     
     st.success(
@@ -230,7 +230,7 @@ if "tuned_model" in st.session_state:
             selected_model
         ],
         "CV_AUC": [
-            grid.best_score_
+            st.session_state["best_score"]
         ],
         "File": [
             model_filename
@@ -297,10 +297,14 @@ def calculate_psi(expected, actual, buckets=10):
     expected = np.array(expected)
     actual = np.array(actual)
 
-    breakpoints = np.percentile(
+    breakpoints = np.unique(
+    np.percentile(
         expected,
-        np.arange(0, buckets + 1) / buckets * 100
-    )
+        np.arange(0,buckets+1)/buckets*100
+    ))
+    
+    if len(breakpoints) < 2:
+        return 0
 
     expected_counts = np.histogram(
         expected,
@@ -410,82 +414,99 @@ if monitor_file:
         use_container_width=True
     )
 
-overall_psi = psi_df["PSI"].mean()
-
-col1,col2,col3 = st.columns(3)
-
-with col1:
-    st.metric(
-        "Average PSI",
-        round(overall_psi,4)
-    )
-
-with col2:
-    st.metric(
-        "Max PSI",
-        round(
-            psi_df["PSI"].max(),
-            4
+    overall_psi = psi_df["PSI"].mean()
+    
+    col1,col2,col3 = st.columns(3)
+    
+    with col1:
+        st.metric(
+            "Average PSI",
+            round(overall_psi,4)
         )
+    
+    with col2:
+        st.metric(
+            "Max PSI",
+            round(
+                psi_df["PSI"].max(),
+                4
+            )
+        )
+    
+    with col3:
+    
+        drifted_features = (
+            psi_df["PSI"] > 0.25
+        ).sum()
+    
+        st.metric(
+            "Drifted Features",
+            drifted_features
+        )
+    
+    fig, ax = plt.subplots(
+        figsize=(12,6)
     )
+    
+    psi_df.sort_values(
+        "PSI",
+        ascending=False
+    ).head(20).plot(
+        x="Feature",
+        y="PSI",
+        kind="bar",
+        ax=ax
+    )
+    
+    ax.axhline(
+        y=0.1,
+        linestyle="--",
+        label="Moderate Drift"
+    )
+    
+    ax.axhline(
+        y=0.25,
+        linestyle="--",
+        label="Significant Drift"
+    )
+    
+    ax.legend()
+    
+    st.pyplot(fig)
+    
+    train_scores = best_model.predict_proba(
+        training_df
+    )[:,1]
 
-with col3:
+    expected_cols = training_df.columns.tolist()
 
-    drifted_features = (
-        psi_df["PSI"] > 0.25
-    ).sum()
+    for col in expected_cols:
+    
+        if col not in monitor_df.columns:
+    
+            if col in st.session_state["num_cols"]:
+                monitor_df[col] = 0
+            else:
+                monitor_df[col] = "Unknown"
+    
+    monitor_df = monitor_df[expected_cols]
+    
+    prod_scores = best_model.predict_proba(
+        monitor_df[
+            training_df.columns
+        ]
+    )[:,1]
 
+    monitor_df[col] = pd.to_numeric(
+    monitor_df[col],
+    errors="coerce")
+    
+    score_psi = calculate_psi(
+        train_scores,
+        prod_scores
+    )
+    
     st.metric(
-        "Drifted Features",
-        drifted_features
+        "Score PSI",
+        round(score_psi,4)
     )
-
-fig, ax = plt.subplots(
-    figsize=(12,6)
-)
-
-psi_df.sort_values(
-    "PSI",
-    ascending=False
-).head(20).plot(
-    x="Feature",
-    y="PSI",
-    kind="bar",
-    ax=ax
-)
-
-ax.axhline(
-    y=0.1,
-    linestyle="--",
-    label="Moderate Drift"
-)
-
-ax.axhline(
-    y=0.25,
-    linestyle="--",
-    label="Significant Drift"
-)
-
-ax.legend()
-
-st.pyplot(fig)
-
-train_scores = best_model.predict_proba(
-    training_df
-)[:,1]
-
-prod_scores = best_model.predict_proba(
-    monitor_df[
-        training_df.columns
-    ]
-)[:,1]
-
-score_psi = calculate_psi(
-    train_scores,
-    prod_scores
-)
-
-st.metric(
-    "Score PSI",
-    round(score_psi,4)
-)
