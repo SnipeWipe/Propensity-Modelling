@@ -1,4 +1,5 @@
 import streamlit as st
+import sqlite3
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,6 +15,25 @@ if "best_model" not in st.session_state:
         "Please train models first."
     )
     st.stop()
+
+#------------------------
+#Creating DB
+#----------------------
+conn = sqlite3.connect("model_registry.db")
+
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS registry (
+    Timestamp TEXT,
+    Model TEXT,
+    CV_AUC REAL,
+    Best_Params TEXT
+)
+""")
+
+conn.commit()
+
 # --------------------------------------------------
 # Load objects
 # --------------------------------------------------
@@ -510,3 +530,26 @@ if monitor_file:
         "Score PSI",
         round(score_psi,4)
     )
+
+cursor.execute("""
+INSERT INTO registry
+VALUES (?, ?, ?, ?)
+""",
+(
+    timestamp,
+    selected_model,
+    st.session_state["best_score"],
+    str(st.session_state["best_params"])
+))
+
+conn.commit()
+
+registry = pd.read_sql(
+    "SELECT * FROM registry",
+    conn
+)
+
+st.dataframe(
+    registry,
+    use_container_width=True
+)
