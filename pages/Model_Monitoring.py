@@ -111,13 +111,11 @@ param_grids = {
     "CatBoost": {
         "model__iterations": [
             100,
-            200,
-            500
+            200
         ],
         "model__depth": [
             4,
-            6,
-            8
+            6
         ]
     }
 }
@@ -143,40 +141,40 @@ if st.button("Run Hyperparameter Tuning"):
             ],
             scoring="roc_auc",
             cv=3,
-            n_jobs=-1
+            n_jobs=1
         )
-        grid.fit(
+        try:
+            grid.fit(
             X_train,
             y_train
         )
-        st.session_state[
-            "tuned_grid"
-        ] = grid
+            st.session_state["tuned_model"] = grid.best_estimator_
+            st.session_state["best_score"] = grid.best_score_
+            st.session_state["best_params"] = grid.best_params_
+            st.session_state["cv_results"] = grid.cv_results_
+        except Exception as e:
+            st.error(
+            f"Tuning Failed: {e}")
+            st.exception(e)
+            st.stop()
+       
         st.success(
             "Tuning Completed"
         )
 # --------------------------------------------------
 # Results
 # --------------------------------------------------
-if "tuned_grid" in st.session_state:
-    grid = st.session_state[
-        "tuned_grid"
-    ]
+if "tuned_model" in st.session_state:
     st.metric(
-        "Best CV AUC",
-        round(
-            grid.best_score_,
-            4)
+    "Best CV AUC",
+    round(st.session_state["best_score"],4)
+    )
     )
     st.subheader(
         "Best Parameters"
     )
     st.json(
-        grid.best_params_
-    )
-    st.session_state[
-        "tuned_model"
-    ] = grid.best_estimator_
+    st.session_state["best_params"])
     # --------------------------------------------------
     # Save Model Version
     # --------------------------------------------------
@@ -192,25 +190,27 @@ if "tuned_grid" in st.session_state:
         f"{selected_model.replace(' ','_')}"
         f"_{timestamp}.pkl"
     )
-    joblib.dump(
-        grid.best_estimator_,
-        model_filename
-    )
+    model_bytes = joblib.dump(
+    grid.best_estimator_,
+    model_filename)
+    
     st.success(
         f"Model Saved: {model_filename}"
     )
     # --------------------------------------------------
     # Download Model
     # --------------------------------------------------
-    with open(
-        model_filename,
-        "rb"
-    ) as f:
-        st.download_button(
+   try:
+        with open(model_filename,"rb") as f:
+            st.download_button(
             "Download Tuned Model",
             f,
             file_name=model_filename.split("/")[-1]
         )
+    except Exception as e:
+        st.warning(
+        f"Download unavailable: {e}"
+    )
     # --------------------------------------------------
     # Registry
     # --------------------------------------------------
@@ -251,12 +251,12 @@ if "tuned_grid" in st.session_state:
     else:
         registry = registry_row
     try:
-    registry.to_csv(
+        registry.to_csv(
         registry_file,
         index=False
     )
     except Exception as e:
-    st.warning(
+        st.warning(
         f"Registry could not be saved: {e}"
     )
     st.subheader(
@@ -267,12 +267,10 @@ if "tuned_grid" in st.session_state:
     )
     
     cv_results = pd.DataFrame(
-        grid.cv_results_
-    )
-    st.subheader(
-        "Parameter Search Results"
-    )
-    st.dataframe(
+    st.session_state["cv_results"]
+)
+
+    display_results = (
         cv_results[
             [
                 "params",
@@ -280,7 +278,15 @@ if "tuned_grid" in st.session_state:
                 "std_test_score",
                 "rank_test_score"
             ]
-        ].sort_values(
-            "rank_test_score"
-        )
+        ]
+        .sort_values("rank_test_score")
+        .head(20)
+    )
+    
+    st.subheader(
+        "Parameter Search Results"
+    )
+    st.dataframe(
+        display_results,
+        width="stretch"
     )
