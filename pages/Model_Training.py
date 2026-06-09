@@ -221,3 +221,4 @@ if st.button("Train Models"):
     st.session_state["y_test"] = y_test
 
     st.success("Models Trained Successfully!")
+    st.session_state["training_data"] = X_train.copy()
