@@ -176,7 +176,8 @@ if prediction_file:
                 ascending=False
             ).head(100)
         )
-    
+
+        st.subheader("Customers Scoring Prediction")
         st.dataframe(
             scoring_df,
             use_container_width=True,
