@@ -148,6 +148,35 @@ if prediction_file:
                 "Score Band"
             )
         )
+
+        st.subheader("Schema Validation")
+        validation_df = pd.DataFrame({
+            "Column": expected_columns,
+            "Present": [
+                col in scoring_df.columns
+                for col in expected_columns
+            ]
+        })
+        st.dataframe(validation_df)
+
+        scoring_df["Segment"] = pd.cut(
+        scoring_df["Propensity_Score"],
+        bins=[0,0.3,0.6,1],
+        labels=[
+            "Low",
+            "Medium",
+            "High"
+        ]
+    )
+        
+        st.subheader("Top 100 Customers")
+        st.dataframe(
+            scoring_df.sort_values(
+                "Propensity_Score",
+                ascending=False
+            ).head(100)
+        )
+    
         st.dataframe(
             scoring_df,
             use_container_width=True,
