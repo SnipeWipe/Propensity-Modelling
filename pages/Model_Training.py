@@ -57,6 +57,9 @@ if st.button("Train Models"):
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
+    y_train = y_train.map({'no': 0, 'yes': 1})
+    y_test = y_test.map({'no': 0, 'yes': 1})
+
     models = {
         "Logistic Regression": LogisticRegression(max_iter=2000),
         "Random Forest": RandomForestClassifier(random_state=42),
