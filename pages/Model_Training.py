@@ -99,7 +99,7 @@ if st.button("Train Models"):
         results.append([name, acc, prec, rec, f1, auc, ks_value])
 
         # ROC Curve
-        fpr, tpr, _ = roc_curve(y_test, prob, pos_label='Yes')
+        fpr, tpr, _ = roc_curve(y_test, prob)
         ax_roc.plot(fpr, tpr, label=f"{name} (AUC={auc:.3f})")
 
         # PR Curve
