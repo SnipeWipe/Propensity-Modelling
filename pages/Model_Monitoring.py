@@ -146,7 +146,7 @@ if st.button("Run Hyperparameter Tuning"):
                 selected_model
             ],
             scoring="roc_auc",
-            cv=5,
+            cv=3,
             n_jobs=-1
         )
         grid.fit(
