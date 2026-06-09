@@ -199,7 +199,7 @@ if "tuned_model" in st.session_state:
     # --------------------------------------------------
     # Download Model
     # --------------------------------------------------
-   try:
+    try:
         with open(model_filename,"rb") as f:
             st.download_button(
             "Download Tuned Model",
