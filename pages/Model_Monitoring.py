@@ -169,7 +169,6 @@ if "tuned_model" in st.session_state:
     "Best CV AUC",
     round(st.session_state["best_score"],4)
     )
-    )
     st.subheader(
         "Best Parameters"
     )
