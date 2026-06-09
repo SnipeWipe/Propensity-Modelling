@@ -61,7 +61,7 @@ if st.button("Train Models"):
     y_test = y_test.map({'no': 0, 'yes': 1})
 
     models = {
-        "Logistic Regression": LogisticRegression(max_iter=2000),
+        "Logistic Regression": LogisticRegression(max_iter=5000),
         "Random Forest": RandomForestClassifier(random_state=42),
         "Gradient Boosting": GradientBoostingClassifier(random_state=42),
         "XGBoost": XGBClassifier(eval_metric='logloss', random_state=42),
