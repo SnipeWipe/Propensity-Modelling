@@ -89,16 +89,12 @@ param_grids = {
     },
     "XGBoost": {
         "model__n_estimators": [
-            100,
-            200
-        ],
+            100],
         "model__max_depth": [
             3,
-            5,
-            7
+            5
         ],
         "model__learning_rate": [
-            0.01,
             0.1
         ]
     },
@@ -254,9 +250,14 @@ if "tuned_grid" in st.session_state:
         )
     else:
         registry = registry_row
+    try:
     registry.to_csv(
         registry_file,
         index=False
+    )
+    except Exception as e:
+    st.warning(
+        f"Registry could not be saved: {e}"
     )
     st.subheader(
         "Model Registry"
