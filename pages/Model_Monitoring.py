@@ -368,6 +368,25 @@ monitor_file = st.file_uploader(
     type=["csv"]
 )
 
+st.subheader(
+    "Model Governance Summary"
+)
+
+if score_psi < 0.1:
+    st.success(
+        "Model Stable"
+    )
+
+elif score_psi < 0.25:
+    st.warning(
+        "Monitor Closely"
+    )
+
+else:
+    st.error(
+        "Retraining Recommended"
+    )
+
 if monitor_file:
 
     monitor_df = pd.read_csv(
