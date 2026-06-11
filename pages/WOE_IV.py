@@ -34,6 +34,18 @@ if st.button("Run IV Analysis"):
         iv_df,
         use_container_width=True
     )
+    
+    st.markdown("""
+    ### IV Interpretation
+    
+    | IV Value | Predictive Power |
+    |-----------|------------------|
+    | < 0.02 | Not useful |
+    | 0.02 - 0.1 | Weak |
+    | 0.1 - 0.3 | Medium |
+    | 0.3 - 0.5 | Strong |
+    | > 0.5 | Suspiciously Powerful |
+    """)
 
     st.download_button(
         "Download IV Report",
