@@ -85,6 +85,7 @@ if st.button("Train Models"):
 
         # === Metrics ===
         auc = roc_auc_score(y_test, prob)
+        gini = 2 * auc - 1
         acc = accuracy_score(y_test, pred)
         prec = precision_score(y_test,pred,average="weighted",zero_division=0)
         rec = recall_score(y_test,pred,average="weighted",zero_division=0)
@@ -99,7 +100,7 @@ if st.button("Train Models"):
         cum_bad = grouped["target"].apply(lambda x: (x == 1).sum()).cumsum() / (y_test == 1).sum()
         ks_value = max(abs(cum_bad - cum_good))
 
-        results.append([name, acc, prec, rec, f1, auc, ks_value])
+        results.append([name, acc, prec, rec, f1, auc,gini, ks_value])
 
         # ROC Curve
         fpr, tpr, _ = roc_curve(y_test, prob)
@@ -117,7 +118,7 @@ if st.button("Train Models"):
     # === Results DataFrame with KS ===
     results_df = pd.DataFrame(
         results, 
-        columns=['Model', 'Accuracy', 'Precision', 'Recall', 'F1 Score', 'AUC', 'KS']
+        columns=['Model', 'Accuracy', 'Precision', 'Recall', 'F1 Score', 'AUC','GINI', 'KS']
     )
 
     # ================== BEST MODEL SELECTION ==================
@@ -171,7 +172,59 @@ if st.button("Train Models"):
     with tab4:
         st.subheader(f"Lift Chart - {best_model_name}")
         best_prob = best_model.predict_proba(X_test)[:, 1]
-
+        risk_df = pd.DataFrame({
+            "Probability": best_prob
+        })
+        
+        risk_df["Risk Segment"] = pd.cut(
+            risk_df["Probability"],
+            bins=[0,0.3,0.7,1],
+            labels=[
+                "Low Risk",
+                "Medium Risk",
+                "High Risk"
+            ]
+        )
+        
+        st.subheader("Risk Segment Distribution")
+        
+        st.dataframe(
+            risk_df["Risk Segment"]
+            .value_counts()
+            .reset_index(),
+            use_container_width=True
+        )
+        
+        decile_df = pd.DataFrame({
+            "Actual": y_test,
+            "Probability": best_prob
+        })
+        
+        decile_df = decile_df.sort_values(
+            "Probability",
+            ascending=False
+        ).reset_index(drop=True)
+        
+        decile_df["Decile"] = pd.qcut(
+            decile_df.index,
+            10,
+            labels=False
+        )
+        
+        decile_summary = decile_df.groupby(
+            "Decile"
+        ).agg(
+            Customers=("Actual","count"),
+            Responders=("Actual","sum"),
+            Response_Rate=("Actual","mean")
+        ).reset_index()
+        
+        st.subheader("Decile Analysis")
+        
+        st.dataframe(
+            decile_summary,
+            use_container_width=True
+        )
         lift_df = pd.DataFrame({"Actual": y_test, "Score": best_prob})
         lift_df = lift_df.sort_values("Score", ascending=False).reset_index(drop=True)
         lift_df["Decile"] = pd.qcut(range(len(lift_df)), 10, labels=False, duplicates='drop')
