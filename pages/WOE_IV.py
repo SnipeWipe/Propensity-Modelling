@@ -18,6 +18,13 @@ target = st.selectbox(
 
 if st.button("Run IV Analysis"):
 
+    df = df.copy()
+
+    df[target] = pd.to_numeric(
+        df[target],
+        errors="coerce"
+    )
+
     iv_df = calculate_iv(
         df,
         target
