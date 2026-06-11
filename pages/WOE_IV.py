@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-from utils.woe_iv_utils import calculate_iv
+from woe_iv_utils import calculate_iv
 
 st.title("WOE & IV Analysis")
 
