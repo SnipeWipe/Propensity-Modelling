@@ -6,7 +6,7 @@ st.set_page_config(
 )
 
 st.title(
-    "Amex Propensity Modeling Platform"
+    "Customer Acquisition Risk & Propensity Modeling Platform"
 )
 
 st.markdown("""
