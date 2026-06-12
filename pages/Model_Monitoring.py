@@ -380,9 +380,6 @@ monitor_file = st.file_uploader(
     type=["csv"]
 )
 
-st.subheader(
-    "Model Governance Summary"
-)
 
 if monitor_file:
 
@@ -549,14 +546,17 @@ if monitor_file:
     )
 
 
-conn.commit()
+    conn.commit()
 
-registry = pd.read_sql(
-    "SELECT * FROM registry",
-    conn
+    st.subheader(
+    "Model Governance Summary"
 )
-
-st.dataframe(
-    registry,
-    use_container_width=True
-)
+    registry = pd.read_sql(
+        "SELECT * FROM registry",
+        conn
+    )
+    
+    st.dataframe(
+        registry,
+        use_container_width=True
+    )
