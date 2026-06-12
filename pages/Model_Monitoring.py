@@ -312,6 +312,18 @@ if "tuned_model" in st.session_state:
         width="stretch"
     )
 
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    cursor.execute("""
+    INSERT INTO registry
+    VALUES (?, ?, ?, ?)
+    """,
+    (
+    timestamp,
+    selected_model,
+    st.session_state["best_score"] ,
+    str(st.session_state["best_params"])
+))
+
 def calculate_psi(expected, actual, buckets=10):
 
     expected = np.array(expected)
@@ -535,17 +547,7 @@ if monitor_file:
         "Score PSI",
         round(score_psi,4)
     )
-timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-cursor.execute("""
-INSERT INTO registry
-VALUES (?, ?, ?, ?)
-""",
-(
-    timestamp,
-    selected_model,
-    grid.best_score_,
-    str(st.session_state["best_params"])
-))
+
 
 conn.commit()
 
