@@ -38,6 +38,9 @@ if st.button("Run IV Analysis"):
     target
     )    
 
+    st.session_state["iv_df"] = iv_df
+    st.session_state["woe_df"] = woe_df
+
     iv_df = iv_df.sort_values(
         by="info_value",
         ascending=False
