@@ -29,6 +29,15 @@ if st.button("Run IV Analysis"):
         errors="coerce"
     )
 
+    st.write(feature)
+    st.write(grouped.head())
+
+    st.write("Target Distribution")
+    st.write(df[target].value_counts())
+    
+    st.write("Target Dtype")
+    st.write(df[target].dtype)
+
     iv_df = calculate_iv(
         df,
         target
