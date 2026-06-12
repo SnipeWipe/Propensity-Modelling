@@ -286,7 +286,25 @@ if "tuned_model" in st.session_state:
     st.dataframe(
         registry
     )
-    
+    st.download_button(
+    "Download Registry CSV",
+    registry.to_csv(index=False),
+    file_name="model_registry.csv",
+    mime="text/csv"
+)
+    st.subheader("Download Previous Models")
+    for _, row in registry.iterrows():
+        model_path = row["File"]
+        if os.path.exists(model_path):
+            with open(model_path, "rb") as f:
+                st.download_button(
+                    label=f"Download {row['Model']} ({row['Timestamp']})",
+                    data=f.read(),
+                    file_name=os.path.basename(model_path),
+                    mime="application/octet-stream",
+                    key=f"model_{row['Timestamp']}"
+                )
+                
     cv_results = pd.DataFrame(
     st.session_state["cv_results"]
 )
