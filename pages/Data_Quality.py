@@ -4,56 +4,62 @@ import matplotlib.pyplot as plt
 
 st.title("Data Quality Dashboard")
 
-if uploaded_file:
+# Check if dataset is loaded
+if "df" not in st.session_state:
+    st.warning("Please upload a dataset from the Home page.")
+    st.stop()
 
-    df = pd.read_csv(uploaded_file)
+df = st.session_state["df"]
 
-    st.success("Dataset Uploaded Successfully")
+st.success("Dataset Loaded Successfully")
 
-    # Remove duplicates
-    duplicates = df.duplicated().sum()
+# Remove duplicates
+duplicates = df.duplicated().sum()
 
-    if duplicates > 0:
-        df = df.drop_duplicates()
+if duplicates > 0:
+    df = df.drop_duplicates()
 
-    st.metric("Duplicate Records Removed", duplicates)
+st.metric(
+    "Duplicate Records Removed",
+    duplicates
+)
 
-    # Save cleaned dataframe
-    st.session_state["df"] = df
+# Save cleaned dataframe back
+st.session_state["df"] = df
 
-    # Display data
-    st.dataframe(
-        df,
-        height=500,
-        use_container_width=True
-    )
+# Display data
+st.dataframe(
+    df,
+    height=500,
+    use_container_width=True
+)
 
-    # Missing values
-    st.subheader("Missing Values")
+# Missing values
+st.subheader("Missing Values")
 
-    missing_df = pd.DataFrame({
-        "Column": df.columns,
-        "Missing Count": df.isnull().sum().values,
-        "Missing %": round(
-            (df.isnull().sum() / len(df)) * 100,
-            2
-        ).values
-    })
+missing_df = pd.DataFrame({
+    "Column": df.columns,
+    "Missing Count": df.isnull().sum().values,
+    "Missing %": round(
+        (df.isnull().sum() / len(df)) * 100,
+        2
+    ).values
+})
 
-    st.dataframe(
-        missing_df,
-        use_container_width=True
-    )
+st.dataframe(
+    missing_df,
+    use_container_width=True
+)
 
-    # Data types
-    st.subheader("Data Types")
+# Data types
+st.subheader("Data Types")
 
-    dtype_df = pd.DataFrame({
-        "Column": df.columns,
-        "Datatype": df.dtypes.astype(str).values
-    })
+dtype_df = pd.DataFrame({
+    "Column": df.columns,
+    "Datatype": df.dtypes.astype(str).values
+})
 
-    st.dataframe(
-        dtype_df,
-        use_container_width=True
-    )
+st.dataframe(
+    dtype_df,
+    use_container_width=True
+)
