@@ -31,6 +31,11 @@ def calculate_iv(df, target):
             bad="sum"
         ).reset_index()
 
+        if feature == "job":
+            st.write("DEBUG - JOB")
+            st.write(grouped.head())
+            st.write("Bad Sum", grouped["bad"].sum())
+
         grouped["good"] = (
             grouped["total"] - grouped["bad"]
         )
