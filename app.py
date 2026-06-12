@@ -20,7 +20,6 @@ st.markdown("""
 - Best Model Hyperparameter Tuning  
 """)
 
-import streamlit as st
 import pandas as pd
 
 st.title("Credit Risk Scorecard Platform")
@@ -30,9 +29,15 @@ uploaded_file = st.sidebar.file_uploader(
     type=["csv"]
 )
 
-if uploaded_file:
+if uploaded_file is not None:
 
     df = pd.read_csv(uploaded_file)
+
+    if "df" in st.session_state:
+    st.sidebar.success(
+        f"Dataset Loaded: {st.session_state['df'].shape[0]} rows, "
+        f"{st.session_state['df'].shape[1]} columns"
+    )
 
     if "duration" in df.columns:
         df = df.drop("duration", axis=1)
