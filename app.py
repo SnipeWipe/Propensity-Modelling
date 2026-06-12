@@ -34,7 +34,7 @@ if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
 
     if "df" in st.session_state:
-    st.sidebar.success(
+        st.sidebar.success(
         f"Dataset Loaded: {st.session_state['df'].shape[0]} rows, "
         f"{st.session_state['df'].shape[1]} columns"
     )
