@@ -243,19 +243,12 @@ if "tuned_model" in st.session_state:
         exist_ok=True
     )
     registry_row = pd.DataFrame({
-        "Timestamp": [
-            timestamp
-        ],
-        "Model": [
-            selected_model
-        ],
-        "CV_AUC": [
-            st.session_state["best_score"]
-        ],
-        "File": [
-            model_filename
-        ]
-    })
+    "Timestamp": [timestamp],
+    "Model": [selected_model],
+    "CV_AUC": [st.session_state["best_score"]],
+    "Best_Params": [str(st.session_state["best_params"])],
+    "File": [model_filename]
+})
     if os.path.exists(
         registry_file
     ):
