@@ -4,18 +4,9 @@ import matplotlib.pyplot as plt
 
 st.title("Data Quality Dashboard")
 
-uploaded_file = st.file_uploader(
-    "Upload CSV",
-    type=["csv"]
-)
-
 if uploaded_file:
 
     df = pd.read_csv(uploaded_file)
-
-    # Drop duration column if present
-    if "duration" in df.columns:
-        df = df.drop("duration", axis=1)
 
     st.success("Dataset Uploaded Successfully")
 
@@ -26,13 +17,6 @@ if uploaded_file:
         df = df.drop_duplicates()
 
     st.metric("Duplicate Records Removed", duplicates)
-
-    # Convert target variable
-    if "deposit" in df.columns:
-        df["deposit"] = df["deposit"].map({
-            "no": 0,
-            "yes": 1
-        })
 
     # Save cleaned dataframe
     st.session_state["df"] = df
