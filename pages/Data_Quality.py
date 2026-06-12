@@ -40,7 +40,7 @@ if uploaded_file:
     st.dataframe(missing_df)
 
     duplicates = df.duplicated().sum()
-
+    df = df.drop_duplicates()
     st.metric(
     "Duplicate Records",
     duplicates
