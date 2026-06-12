@@ -19,6 +19,10 @@ target = st.selectbox(
 if st.button("Run IV Analysis"):
 
     df = df.copy()
+    df[target] = df[target].map({
+        "no": 0,
+        "yes": 1
+    })
 
     df[target] = pd.to_numeric(
         df[target],
