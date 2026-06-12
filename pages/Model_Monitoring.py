@@ -535,7 +535,7 @@ if monitor_file:
         "Score PSI",
         round(score_psi,4)
     )
-
+timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 cursor.execute("""
 INSERT INTO registry
 VALUES (?, ?, ?, ?)
