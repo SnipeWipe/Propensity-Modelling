@@ -22,8 +22,6 @@ st.markdown("""
 
 import pandas as pd
 
-st.title("Credit Risk Scorecard Platform")
-
 uploaded_file = st.sidebar.file_uploader(
     "Upload Dataset",
     type=["csv"]
