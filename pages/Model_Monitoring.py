@@ -171,7 +171,7 @@ if st.button("Run Hyperparameter Tuning"):
             y_train
         )
             st.session_state["tuned_model"] = grid.best_estimator_
-            st.session_state["best_score"] = grid.best_score_
+            st.session_state.get("best_score", None)= grid.best_score_
             st.session_state["best_params"] = grid.best_params_
             st.session_state["cv_results"] = grid.cv_results_
         except Exception as e:
