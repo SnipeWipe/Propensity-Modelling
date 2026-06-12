@@ -543,7 +543,7 @@ VALUES (?, ?, ?, ?)
 (
     timestamp,
     selected_model,
-    st.session_state["best_score"],
+    grid.best_score_,
     str(st.session_state["best_params"])
 ))
 
