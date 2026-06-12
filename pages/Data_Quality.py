@@ -12,7 +12,7 @@ uploaded_file = st.file_uploader(
 if uploaded_file:
 
     df = pd.read_csv(uploaded_file)
-
+    df = df.drop("duration",axis=1,inplace=True)
     st.session_state["df"] = df
 
     st.success("Dataset Uploaded Successfully")
