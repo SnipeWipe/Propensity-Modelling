@@ -32,10 +32,10 @@ if st.button("Run IV Analysis"):
     st.write("Unique Target Values")
     st.write(df[target].unique())
 
-    iv_df = calculate_iv(
-        df,
-        target
-    )
+    iv_df, woe_df = calculate_iv(
+    df,
+    target
+    )    
 
     iv_df = iv_df.sort_values(
         by="info_value",
@@ -47,6 +47,25 @@ if st.button("Run IV Analysis"):
     st.dataframe(
         iv_df,
         use_container_width=True
+    )
+
+    st.subheader("WOE Details")
+    st.dataframe(
+        woe_df,
+        use_container_width=True
+    )
+    selected_var = st.selectbox(
+    "Select Variable for WOE Plot",
+    woe_df["Variable"].unique()
+    )    
+    plot_df = woe_df[
+        woe_df["Variable"] == selected_var
+    ]
+
+    st.bar_chart(
+        plot_df.set_index(
+            plot_df.columns[0]
+        )["WOE"]
     )
     
     st.markdown("""
