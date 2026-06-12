@@ -45,7 +45,11 @@ if uploaded_file:
         df = df.drop_duplicates()
     
     st.metric("Duplicate Records Removed", duplicates)
-    
+
+    df["deposit"] = df["deposit"].map({
+        "no":0,
+        "yes":1
+    })
 
     st.write("Data Types")
     dtype_df = pd.DataFrame({
