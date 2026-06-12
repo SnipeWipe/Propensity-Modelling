@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from woe_iv_utils import calculate_iv
+import altair as alt
 
 st.title("WOE & IV Analysis")
 
@@ -57,17 +58,53 @@ if st.button("Run IV Analysis"):
     selected_var = st.selectbox(
     "Select Variable for WOE Plot",
     woe_df["Variable"].unique()
-    )    
+)
+    
     plot_df = woe_df[
         woe_df["Variable"] == selected_var
-    ]
-
-    st.bar_chart(
-        plot_df.set_index(
-            plot_df.columns[0]
-        )["WOE"]
+    ].copy()
+    
+    # Find the bin column
+    bin_col = [c for c in plot_df.columns
+               if c not in [
+                   "Variable",
+                   "total",
+                   "bad",
+                   "good",
+                   "good_dist",
+                   "bad_dist",
+                   "WOE",
+                   "IV"
+               ]][0]
+    
+    plot_df[bin_col] = (
+        plot_df[bin_col]
+        .astype(str)
     )
     
+    chart = alt.Chart(
+        plot_df
+    ).mark_bar().encode(
+        x=alt.X(
+            bin_col,
+            sort=None,
+            title="Bin"
+        ),
+        y=alt.Y(
+            "WOE",
+            title="Weight of Evidence"
+        ),
+        tooltip=[
+            bin_col,
+            "WOE",
+            "IV"
+        ]
+    )
+    
+    st.altair_chart(
+        chart,
+        use_container_width=True
+    )
     st.markdown("""
     ### IV Interpretation
     
