@@ -32,7 +32,7 @@ def calculate_iv(df, target):
         ).reset_index()
 
         if feature == "job":
-            import streamlit
+            import streamlit as st
             st.write("DEBUG - JOB")
             st.write(grouped.head())
             st.write("Bad Sum", grouped["bad"].sum())
