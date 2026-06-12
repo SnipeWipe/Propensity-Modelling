@@ -1,10 +1,7 @@
-import pandas as pd
-import numpy as np
-
-
 def calculate_iv(df, target):
 
     iv_list = []
+    woe_tables = []
 
     features = [col for col in df.columns if col != target]
 
@@ -15,7 +12,6 @@ def calculate_iv(df, target):
             target: df[target]
         })
 
-        # Convert numeric variables into bins
         if pd.api.types.is_numeric_dtype(temp[feature]):
             try:
                 temp[feature] = pd.qcut(
@@ -30,12 +26,6 @@ def calculate_iv(df, target):
             total="count",
             bad="sum"
         ).reset_index()
-
-        if feature == "job":
-            import streamlit as st
-            st.write("DEBUG - JOB")
-            st.write(grouped.head())
-            st.write("Bad Sum", grouped["bad"].sum())
 
         grouped["good"] = (
             grouped["total"] - grouped["bad"]
@@ -68,4 +58,15 @@ def calculate_iv(df, target):
             "info_value": round(iv, 4)
         })
 
-    return pd.DataFrame(iv_list)
+        grouped["Variable"] = feature
+
+        woe_tables.append(grouped)
+
+    iv_df = pd.DataFrame(iv_list)
+
+    woe_df = pd.concat(
+        woe_tables,
+        ignore_index=True
+    )
+
+    return iv_df, woe_df
