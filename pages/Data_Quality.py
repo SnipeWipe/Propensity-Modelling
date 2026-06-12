@@ -45,7 +45,7 @@ if uploaded_file:
         df = df.drop_duplicates()
     
     st.metric("Duplicate Records Removed", duplicates)
-    )
+    
 
     st.write("Data Types")
     dtype_df = pd.DataFrame({
