@@ -34,12 +34,10 @@ st.session_state["target"] = target
 
 if st.button("Train Models"):
     y = df[target]
-    if y.dtype == "object":
-        if y.nunique() == 2:
-            y = pd.factorize(y)[0]
-        else:
-            st.error("Target must be binary.")
-            st.stop()
+    
+    if y.nunique() != 2:
+        st.error("Target must be binary.")
+        st.stop()
 
     X = df.drop(columns=[target])
     cat_cols = X.select_dtypes(include='object').columns.tolist()
@@ -56,9 +54,6 @@ if st.button("Train Models"):
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=y
     )
-
-    y_train = y_train.map({'no': 0, 'yes': 1})
-    y_test = y_test.map({'no': 0, 'yes': 1})
 
     models = {
         "Logistic Regression": LogisticRegression(max_iter=5000),
