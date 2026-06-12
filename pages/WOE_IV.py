@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-
+import numpy as np
 from woe_iv_utils import calculate_iv
 
 st.title("WOE & IV Analysis")
