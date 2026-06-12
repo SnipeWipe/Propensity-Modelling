@@ -52,5 +52,10 @@ if uploaded_file:
     "Datatype":
     df.dtypes.astype(str)
 })
+    df = df.copy()
+    df["deposit"] = df["deposit"].map({
+        "no": 0,
+        "yes": 1
+    })
 
     st.dataframe(dtype_df)
