@@ -40,11 +40,12 @@ if uploaded_file:
     st.dataframe(missing_df)
 
     duplicates = df.duplicated().sum()
-    df = df.drop_duplicates()
-    st.metric(
-    "Duplicate Records",
-    duplicates
-)
+    
+    if duplicates > 0:
+        df = df.drop_duplicates()
+    
+    st.metric("Duplicate Records Removed", duplicates)
+    )
 
     st.write("Data Types")
     dtype_df = pd.DataFrame({
