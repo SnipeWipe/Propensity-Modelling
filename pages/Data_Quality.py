@@ -60,4 +60,4 @@ if uploaded_file:
    
 
     st.dataframe(dtype_df)
-    df = st.session_state["df"]
+    st.session_state["df"] = df
