@@ -276,32 +276,40 @@ if "tuned_model" in st.session_state:
     st.subheader(
         "Model Registry"
     )
+    st.subheader("Model Registry")
+    display_registry = registry.copy()
     st.dataframe(
-        registry
+        display_registry[
+            [
+                "Timestamp",
+                "Model",
+                "CV_AUC"
+            ]
+        ],
+        use_container_width=True
     )
-    st.download_button(
-    "Download Registry CSV",
-    registry.to_csv(index=False),
-    file_name="model_registry.csv",
-    mime="text/csv"
-)
-    st.subheader("Download Previous Models")
-    for _, row in registry.iterrows():
-        model_path = row["File"]
-        if os.path.exists(model_path):
-            with open(model_path, "rb") as f:
-                st.download_button(
-                    label=f"Download {row['Model']} ({row['Timestamp']})",
-                    data=f.read(),
-                    file_name=os.path.basename(model_path),
-                    mime="application/octet-stream",
-                    key=f"model_{row['Timestamp']}"
-                )
-                
+    selected_row = st.selectbox(
+        "Select model to download",
+        registry.index,
+        format_func=lambda x:
+        f"{registry.loc[x,'Model']} | "
+        f"{registry.loc[x,'Timestamp']}"
+    )
+    model_path = registry.loc[
+        selected_row,
+        "File"
+    ]
+    if os.path.exists(model_path):
+        with open(model_path, "rb") as f:
+            st.download_button(
+                label="Download Selected Model",
+                data=f.read(),
+                file_name=os.path.basename(model_path),
+                mime="application/octet-stream"
+            )                
     cv_results = pd.DataFrame(
     st.session_state["cv_results"]
 )
-
     display_results = (
         cv_results[
             [
