@@ -1,3 +1,6 @@
+import pandas as pd
+import numpy as np
+
 def calculate_iv(df, target):
 
     iv_list = []
