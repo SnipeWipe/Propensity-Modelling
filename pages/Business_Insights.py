@@ -32,5 +32,5 @@ col2.metric(
 
 col3.metric(
     "Best Gini",
-    round(best_model["Gini"],4)
+    round(best_model["GINI"],4)
 )
