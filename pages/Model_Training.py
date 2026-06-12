@@ -26,8 +26,8 @@ if "df" not in st.session_state:
     st.warning("Please upload a dataset first in the Data Quality Page.")
     st.stop()
 
-    st.session_state("df") = df
-    st.dataframe(df.head(), use_container_width=True)
+st.session_state("df") = df
+st.dataframe(df.head(), use_container_width=True)
 
 target = st.selectbox("Select Target Variable", df.columns)
 st.session_state["target"] = target
