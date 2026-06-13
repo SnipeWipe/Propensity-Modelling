@@ -61,6 +61,10 @@ def calculate_iv(df, target):
             "info_value": round(iv, 4)
         })
 
+        grouped.rename(
+        columns={feature: "Bin"},
+        inplace=True
+    )
         grouped["Variable"] = feature
 
         woe_tables.append(grouped)
