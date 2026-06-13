@@ -312,9 +312,6 @@ st.subheader(
 )
 feature_summary = pd.DataFrame()
 feature_summary["Feature"] = df.columns
-feature_summary["Missing %"] = (
-    df.isnull().mean() * 100
-).round(2).values
 feature_summary["Unique Values"] = [
     df[col].nunique()
     for col in df.columns
