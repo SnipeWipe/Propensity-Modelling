@@ -37,11 +37,17 @@ if st.button("Run IV Analysis"):
     df,
     target
     )    
+    st.session_state["iv_df"] = iv_df
+    st.session_state["woe_df"] = woe_df
+
+    st.return()
 
 if "iv_df" in st.session_state:
 
     iv_df = st.session_state["iv_df"]
     woe_df = st.session_state["woe_df"]
+
+    st.write("WOE Columns:", woe_df.columns.tolist())
 
     iv_df = iv_df.sort_values(
         by="info_value",
@@ -71,22 +77,9 @@ if "iv_df" in st.session_state:
         woe_df["Variable"] == selected_var
     ].copy()    
     # Find the bin column
-    bin_col = [c for c in plot_df.columns
-               if c not in [
-                   "Variable",
-                   "total",
-                   "bad",
-                   "good",
-                   "good_dist",
-                   "bad_dist",
-                   "WOE",
-                   "IV"
-               ]][0]
+    bin_col = "Bin"
     
-    plot_df[bin_col] = (
-        plot_df[bin_col]
-        .astype(str)
-    )
+    plot_df["Bin"] = plot_df["Bin"].astype(str)
     
     chart = alt.Chart(
         plot_df
