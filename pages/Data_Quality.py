@@ -132,28 +132,23 @@ if len(num_cols) > 0:
 else:
     st.warning("No numeric columns found.")
 
-fig, ax = plt.subplots()
-df[selected_feature].hist(
-    bins=30,
-    ax=ax)
-ax.set_title(
-    selected_feature)
-st.pyplot(fig)
-
 st.subheader(
     "Outlier Detection"
 )
-box_feature = st.selectbox(
-    "Select Feature for Box Plot",
-    num_cols,
-    key="box"
-)
-fig, ax = plt.subplots()
-ax.boxplot(
-    df[box_feature].dropna()
-)
-ax.set_title(box_feature)
-st.pyplot(fig)
+if len(num_cols) > 0:
+    box_feature = st.selectbox(
+        "Select Feature for Box Plot",
+        num_cols,
+        key="box"
+    )
+    fig, ax = plt.subplots()
+    ax.boxplot(
+        df[box_feature].dropna()
+    )
+    ax.set_title(box_feature)
+    st.pyplot(fig)
+else:
+    st.warning("No numeric columns available for outlier analysis.")
 
 cat_cols = df.select_dtypes(
     exclude="number"
@@ -266,7 +261,7 @@ if st.button("Apply Treatment"):
 
     st.session_state["df"] = treated_df
     df = treated_df
-
+    
     st.write(
         "Updated Dataset Shape:",
         treated_df.shape
@@ -339,3 +334,5 @@ st.session_state["cat_cols"] = (
     ).columns.tolist()
 )
 st.session_state["training_data"] = df.copy()
+
+
