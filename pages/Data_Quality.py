@@ -259,7 +259,7 @@ if st.button("Apply Treatment"):
         treated_df.head(),
         use_container_width=True
     )
-
+    
 missing_df = pd.DataFrame({
     "Column": df.columns,
     "Missing Count": df.isnull().sum().values,
@@ -268,24 +268,33 @@ missing_df = pd.DataFrame({
         2
     ).values
 })
-
-st.subheader(
-    "Missing Value Distribution"
+st.subheader("Missing Values")
+st.dataframe(
+    missing_df,
+    use_container_width=True
 )
-fig, ax = plt.subplots(
-    figsize=(10,5)
-)
-missing_df.sort_values(
-    "Missing %",
-    ascending=False
-).plot(
-    x="Column",
-    y="Missing %",
-    kind="bar",
-    ax=ax
-)
-st.pyplot(fig)
-
+if missing_df["Missing Count"].sum() > 0:
+    st.subheader(
+        "Missing Value Distribution"
+    )
+    fig, ax = plt.subplots(
+        figsize=(10,5)
+    )
+    missing_df.sort_values(
+        "Missing %",
+        ascending=False
+    ).plot(
+        x="Column",
+        y="Missing %",
+        kind="bar",
+        ax=ax
+    )
+    st.pyplot(fig)
+else:
+    st.success(
+        "No missing values detected."
+    )
+    
 st.subheader(
     "Feature Monitoring Summary"
 )
