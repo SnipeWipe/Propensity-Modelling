@@ -273,9 +273,7 @@ if "tuned_model" in st.session_state:
         st.warning(
         f"Registry could not be saved: {e}"
     )
-    st.subheader(
-        "Model Registry"
-    )
+  
     st.subheader("Model Registry")
     display_registry = registry.copy()
     st.dataframe(
