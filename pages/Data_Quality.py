@@ -260,6 +260,14 @@ if st.button("Apply Treatment"):
         use_container_width=True
     )
 
+missing_df = pd.DataFrame({
+    "Column": df.columns,
+    "Missing Count": df.isnull().sum().values,
+    "Missing %": round(
+        (df.isnull().sum() / len(df)) * 100,
+        2
+    ).values
+})
 
 st.subheader(
     "Missing Value Distribution"
