@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 
 st.title("Customer Scoring Dashboard")
-
+st.write("Training Features")
+st.write(st.session_state["X"].columns.tolist())
 # Check model exists
 if "trained_models" not in st.session_state:
 
