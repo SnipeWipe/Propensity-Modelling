@@ -330,16 +330,24 @@ if "tuned_model" in st.session_state:
     )
 
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    cursor.execute("""
-    INSERT INTO registry
-    VALUES (?, ?, ?, ?)
-    """,
-    (
-    timestamp,
-    selected_model,
-    st.session_state["best_score"] ,
-    str(st.session_state["best_params"])
-))
+    # Safe extraction from session_state
+    best_score = st.session_state.get("best_score")
+    best_params = st.session_state.get("best_params")
+    # Insert into SQLite with explicit columns (IMPORTANT FIX)
+    try:
+        cursor.execute("""
+            INSERT INTO registry (Timestamp, Model, CV_AUC, Best_Params)
+            VALUES (?, ?, ?, ?)
+        """, (
+            timestamp,
+            selected_model,
+            best_score,
+            str(best_params)
+        ))
+        conn.commit()
+    except Exception as e:
+        st.error("Failed to insert into registry")
+        st.exception(e)
 
 def calculate_psi(expected, actual, buckets=10):
 
@@ -548,9 +556,9 @@ if monitor_file:
         ]
     )[:,1]
 
-    monitor_df[col] = pd.to_numeric(
-    monitor_df[col],
-    errors="coerce")
+    for col in num_cols:
+        if col in monitor_df.columns:
+            monitor_df[col] = pd.to_numeric(monitor_df[col], errors="coerce")
     
     score_psi = calculate_psi(
         train_scores,
