@@ -38,8 +38,10 @@ if st.button("Run IV Analysis"):
     target
     )    
 
-    st.session_state["iv_df"] = iv_df
-    st.session_state["woe_df"] = woe_df
+if "iv_df" in st.session_state:
+
+    iv_df = st.session_state["iv_df"]
+    woe_df = st.session_state["woe_df"]
 
     iv_df = iv_df.sort_values(
         by="info_value",
@@ -54,19 +56,20 @@ if st.button("Run IV Analysis"):
     )
 
     st.subheader("WOE Details")
+
     st.dataframe(
         woe_df,
         use_container_width=True
     )
+
     selected_var = st.selectbox(
-    "Select Variable for WOE Plot",
-    woe_df["Variable"].unique()
-)
-    
+        "Select Variable for WOE Plot",
+        woe_df["Variable"].unique()
+    )
+
     plot_df = woe_df[
         woe_df["Variable"] == selected_var
-    ].copy()
-    
+    ].copy()    
     # Find the bin column
     bin_col = [c for c in plot_df.columns
                if c not in [
