@@ -117,9 +117,21 @@ st.subheader(
 )
 num_cols = df.select_dtypes(
     include="number").columns
-selected_feature = st.selectbox(
-    "Select Numeric Feature",
-    num_cols)
+
+if len(num_cols) > 0:
+    selected_feature = st.selectbox(
+        "Select Numeric Feature",
+        num_cols
+    )
+    fig, ax = plt.subplots()
+    df[selected_feature].hist(
+        bins=30,
+        ax=ax
+    )
+    st.pyplot(fig)
+else:
+    st.warning("No numeric columns found.")
+
 fig, ax = plt.subplots()
 df[selected_feature].hist(
     bins=30,
@@ -222,9 +234,13 @@ if st.button("Apply Treatment"):
 
     elif treatment == "Log Transformation":
 
-        treated_df[box_feature] = np.log1p(
-            treated_df[box_feature]
-        )
+        if (treated_df[box_feature] < 0).any():
+            st.error(
+                "Log transformation cannot be applied to negative values."
+            )
+        else:
+            treated_df[box_feature] = np.log1p(
+                treated_df[box_feature])
 
         st.success(
             f"Log Transformation applied to {box_feature}"
@@ -249,6 +265,7 @@ if st.button("Apply Treatment"):
         )
 
     st.session_state["df"] = treated_df
+    df = treated_df
 
     st.write(
         "Updated Dataset Shape:",
@@ -298,17 +315,15 @@ else:
 st.subheader(
     "Feature Monitoring Summary"
 )
-feature_summary = pd.DataFrame({
-    "Feature": df.columns,
-    "Missing %": round(
-        df.isnull().mean()*100,
-        2
-    ),
-    "Unique Values": [
-        df[col].nunique()
-        for col in df.columns
-    ]
-})
+feature_summary = pd.DataFrame()
+feature_summary["Feature"] = df.columns
+feature_summary["Missing %"] = (
+    df.isnull().mean() * 100
+).round(2).values
+feature_summary["Unique Values"] = [
+    df[col].nunique()
+    for col in df.columns
+]
 st.dataframe(
     feature_summary,
     use_container_width=True
