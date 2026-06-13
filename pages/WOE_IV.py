@@ -40,8 +40,6 @@ if st.button("Run IV Analysis"):
     st.session_state["iv_df"] = iv_df
     st.session_state["woe_df"] = woe_df
 
-    st.return()
-
 if "iv_df" in st.session_state:
 
     iv_df = st.session_state["iv_df"]
