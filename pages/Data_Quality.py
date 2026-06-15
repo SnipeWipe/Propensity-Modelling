@@ -141,51 +141,8 @@ if len(num_cols) > 0:
         num_cols,
         key="box"
     )
-    fig, ax = plt.subplots()
-    ax.boxplot(
-        df[box_feature].dropna()
-    )
-    ax.set_title(box_feature)
-    st.pyplot(fig)
-else:
-    st.warning("No numeric columns available for outlier analysis.")
 
-cat_cols = df.select_dtypes(
-    exclude="number"
-).columns
-if len(cat_cols) > 0:
-    st.subheader(
-        "Categorical Analysis"
-    )
-    cat_feature = st.selectbox(
-        "Select Categorical Feature",
-        cat_cols
-    )
-    fig, ax = plt.subplots(
-        figsize=(10,5)
-    )
-    df[cat_feature].value_counts().head(
-        15
-    ).plot(
-        kind="bar",
-        ax=ax
-    )
-    st.pyplot(fig)
-
-st.subheader("Outlier Treatment")
-
-treatment = st.selectbox(
-    "Select Treatment Method",
-    [
-        "None",
-        "IQR Capping",
-        "Percentile Capping (1%-99%)",
-        "Log Transformation",
-        "Remove Outliers"
-    ]
-)
-
-if st.button("Apply Treatment"):
+    if st.button("Apply Treatment"):
 
     treated_df = df.copy()
 
@@ -276,6 +233,50 @@ if st.button("Apply Treatment"):
         treated_df.head(),
         use_container_width=True
     )
+
+    fig, ax = plt.subplots()
+    ax.boxplot(
+        df[box_feature].dropna()
+    )
+    ax.set_title(box_feature)
+    st.pyplot(fig)
+else:
+    st.warning("No numeric columns available for outlier analysis.")
+
+cat_cols = df.select_dtypes(
+    exclude="number"
+).columns
+if len(cat_cols) > 0:
+    st.subheader(
+        "Categorical Analysis"
+    )
+    cat_feature = st.selectbox(
+        "Select Categorical Feature",
+        cat_cols
+    )
+    fig, ax = plt.subplots(
+        figsize=(10,5)
+    )
+    df[cat_feature].value_counts().head(
+        15
+    ).plot(
+        kind="bar",
+        ax=ax
+    )
+    st.pyplot(fig)
+
+st.subheader("Outlier Treatment")
+
+treatment = st.selectbox(
+    "Select Treatment Method",
+    [
+        "None",
+        "IQR Capping",
+        "Percentile Capping (1%-99%)",
+        "Log Transformation",
+        "Remove Outliers"
+    ]
+)
     
 missing_df = pd.DataFrame({
     "Column": df.columns,
