@@ -275,6 +275,6 @@ with tab3:
         st.dataframe(
             negative_df
         )
-    st.success(
+st.success(
         f"Best Model: {best_model_name}"
     )
