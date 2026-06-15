@@ -226,6 +226,7 @@ if len(num_cols) > 0:
         )
 
     st.session_state["df"] = treated_df
+    st.rerun()
     df = treated_df
     
     st.write(
