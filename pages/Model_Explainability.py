@@ -50,13 +50,6 @@ st.subheader("Top 20 Most Important Features")
 st.bar_chart(importance_df.set_index("Feature"))
 
 import numpy as np
-X_test_display = X_test.reset_index(
-    drop=True
-)
-
-X_sample_display = X_sample.reset_index(
-    drop=True
-)
 # ==========================================================
 # SHAP ANALYSIS
 # ==========================================================
@@ -73,12 +66,16 @@ X_transformed_df = pd.DataFrame(
 )
 # Sample data for performance
 sample_size = min(500, len(X_transformed_df))
-X_sample = (
-    X_transformed_df.sample(
-        sample_size,
-        random_state=42).reset_index(drop=True)
+sampled_df = X_transformed_df.sample(
+    sample_size,
+    random_state=42
 )
-X_sample = X_sample.reset_index(drop=True)
+sample_mapping = sampled_df.index.tolist()
+X_sample = sampled_df.reset_index(
+    drop=True
+)
+X_test_display = X_test.reset_index(drop=True)
+X_sample_display = X_sample.reset_index(drop=True)
 # ==========================================================
 # CREATE SHAP EXPLAINER
 # ==========================================================
@@ -143,7 +140,7 @@ customer_summary = pd.DataFrame({
         X_test
     )[:,1]
 })
-    st.dataframe(
+st.dataframe(
         customer_summary.head(100)
     )
 
@@ -181,38 +178,34 @@ with tab2:
     plt.close(fig2)
 
 with tab3:
-
     st.subheader(
         "Customer-Level Explanation")
-    
     selected_customer = st.selectbox(
     "Choose Customer",
     customer_summary["Customer ID"]
 )
-
+    customer_idx = customer_summary[
+    customer_summary["Customer ID"]
+    == selected_customer
+    ].index[0]
     # Prediction Score
     customer_data = X_test.iloc[
         [customer_idx]
     ]
-
     score = best_model.predict_proba(
         customer_data
     )[0,1]
-
     st.metric(
         "Predicted Propensity",
         f"{score:.2%}"
     )
-
     # Waterfall Plot
     st.subheader(
         "Why Did The Model Predict This Score?"
     )
-
     fig = plt.figure(
         figsize=(10,6)
     )
-
     shap.plots.waterfall(
         shap.Explanation(
             values=customer_shap[
@@ -227,53 +220,46 @@ with tab3:
             data=X_sample.iloc[
                 customer_idx
             ],
-            feature_names=X_sample.columns
-        ),
+            feature_names=X_sample.columns),
         show=False
     )
-
     st.pyplot(fig)
-
     plt.close(fig)
 
-sample_idx = X_sample.index[customer_idx]
-
-customer_data = X_test.iloc[
-    [sample_idx]
-]
-
-score = best_model.predict_proba(
-    customer_data
-)[0,1]
-
-st.metric(
-    "Predicted Propensity",
-    f"{score:.2%}"
-)
-
-contrib_df = pd.DataFrame({
-    "Feature": X_sample.columns,
-    "SHAP Value": customer_shap[
-        customer_idx
+    sample_idx = X_sample.index[customer_idx]
+    
+    customer_data = X_test.iloc[
+        [sample_idx]
     ]
-})
-
-positive_df = (
-    contrib_df
-    .sort_values(
-        "SHAP Value",
-        ascending=False
+    
+    st.metric(
+        "Predicted Propensity",
+        f"{score:.2%}"
     )
-    .head(10)
-)
-
-negative_df = (
-    contrib_df
-    .sort_values(
-        "SHAP Value"
+    
+    contrib_df = pd.DataFrame({
+        "Feature": X_sample.columns,
+        "SHAP Value": customer_shap[
+            customer_idx
+        ]
+    })
+    
+    positive_df = (
+        contrib_df
+        .sort_values(
+            "SHAP Value",
+            ascending=False
+        )
+        .head(10)
     )
-    .head(10)
-)
+    
+    negative_df = (
+        contrib_df
+        .sort_values(
+            "SHAP Value"
+        )
+        .head(10)
+    )
 
 col1,col2 = st.columns(2)
 
