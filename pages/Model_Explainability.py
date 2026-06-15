@@ -200,7 +200,7 @@ with tab3:
     score = best_model.predict_proba(
         customer_data
     )[0,1]
-    st.metric(
+    st.header(
         "Predicted Propensity",
         f"{score:.2%}"
     )
