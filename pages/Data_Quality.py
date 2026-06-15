@@ -237,9 +237,9 @@ if st.button("Apply Treatment"):
             treated_df[box_feature] = np.log1p(
                 treated_df[box_feature])
 
-        st.success(
-            f"Log Transformation applied to {box_feature}"
-        )
+            st.success(
+                f"Log Transformation applied to {box_feature}"
+            )
 
     elif treatment == "Remove Outliers":
 
