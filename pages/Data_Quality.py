@@ -154,14 +154,14 @@ if len(num_cols) > 0:
     
         IQR = Q3 - Q1
     
-         if IQR == 0:
-        st.warning(
-            "Selected feature has no variation."
-        )
-    
-        lower = Q1 - 1.5 * IQR
-        upper = Q3 + 1.5 * IQR
-    
+        if IQR == 0:
+            st.warning(
+                "Selected feature has no variation."
+            )
+        
+            lower = Q1 - 1.5 * IQR
+            upper = Q3 + 1.5 * IQR
+        
         if treatment == "IQR Capping":
     
             treated_df[box_feature] = (
@@ -223,15 +223,16 @@ if len(num_cols) > 0:
         st.rerun()
         df = treated_df
         
-    st.write(
-        "Updated Dataset Shape:",
-        treated_df.shape
-    )
-
-    st.dataframe(
-        treated_df.head(),
-        use_container_width=True
-    )
+        st.write(
+            "Updated Dataset Shape:",
+            treated_df.shape
+        )
+    
+        st.dataframe(
+            treated_df.head(),
+            use_container_width=True
+        )
+        st.rerun()
 
     fig, ax = plt.subplots()
     ax.boxplot(
