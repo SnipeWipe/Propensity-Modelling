@@ -234,11 +234,6 @@ with tab3:
     sample_idx = sample_mapping[customer_idx]
     customer_data = X_test.iloc[[sample_idx]]
     
-    st.metric(
-        "Predicted Propensity",
-        f"{score:.2%}"
-    )
-    
     contrib_df = pd.DataFrame({
         "Feature": X_sample.columns,
         "SHAP Value": customer_shap[
