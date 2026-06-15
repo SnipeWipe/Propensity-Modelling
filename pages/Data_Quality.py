@@ -105,8 +105,12 @@ if len(numeric_cols.columns) > 1:
     fig, ax = plt.subplots(
         figsize=(10,6)
     )
+    corr_df = numeric_cols.drop(
+    columns=["deposit"],
+    errors="ignore"
+)
     sns.heatmap(
-        numeric_cols.corr(),
+        corr_df.corr(),
         cmap="coolwarm",
         ax=ax
     )
