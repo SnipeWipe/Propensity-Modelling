@@ -131,15 +131,18 @@ tab1, tab2, tab3 = st.tabs(
 # ----------------------------------------------------------
 # SUMMARY PLOT
 # ----------------------------------------------------------
+sample_predictions = best_model.predict_proba(
+    X_test.iloc[sample_mapping]
+)[:,1]
+
 customer_summary = pd.DataFrame({
     "Customer ID": [
         f"CUST_{i:05d}"
         for i in range(len(X_sample))
     ],
-    "Predicted Score": best_model.predict_proba(
-        X_test
-    )[:,1]
+    "Predicted Score": sample_predictions
 })
+
 st.dataframe(
         customer_summary.head(100)
     )
@@ -189,8 +192,10 @@ with tab3:
     == selected_customer
     ].index[0]
     # Prediction Score
+    original_idx = sample_mapping[
+    customer_idx]
     customer_data = X_test.iloc[
-        [customer_idx]
+        [original_idx]
     ]
     score = best_model.predict_proba(
         customer_data
@@ -226,11 +231,8 @@ with tab3:
     st.pyplot(fig)
     plt.close(fig)
 
-    sample_idx = X_sample.index[customer_idx]
-    
-    customer_data = X_test.iloc[
-        [sample_idx]
-    ]
+    sample_idx = sample_mapping[customer_idx]
+    customer_data = X_test.iloc[[sample_idx]]
     
     st.metric(
         "Predicted Propensity",
@@ -260,24 +262,24 @@ with tab3:
         )
         .head(10)
     )
-
-col1,col2 = st.columns(2)
-
-with col1:
-    st.subheader(
-        "Top Positive Drivers"
+    
+    col1,col2 = st.columns(2)
+    
+    with col1:
+        st.subheader(
+            "Top Positive Drivers"
+        )
+        st.dataframe(
+            positive_df
+        )
+    
+    with col2:
+        st.subheader(
+            "Top Negative Drivers"
+        )
+        st.dataframe(
+            negative_df
+        )
+    st.success(
+        f"Best Model: {best_model_name}"
     )
-    st.dataframe(
-        positive_df
-    )
-
-with col2:
-    st.subheader(
-        "Top Negative Drivers"
-    )
-    st.dataframe(
-        negative_df
-    )
-st.success(
-    f"Best Model: {best_model_name}"
-)
