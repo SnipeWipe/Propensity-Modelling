@@ -147,88 +147,82 @@ if len(num_cols) > 0:
     )
 
     if st.button("Apply Treatment"):
-
-    treated_df = df.copy()
-
-    Q1 = treated_df[box_feature].quantile(0.25)
-    Q3 = treated_df[box_feature].quantile(0.75)
-
-    IQR = Q3 - Q1
-
-     if IQR == 0:
-    st.warning(
-        "Selected feature has no variation."
-    )
-
-    lower = Q1 - 1.5 * IQR
-    upper = Q3 + 1.5 * IQR
-
-    if treatment == "IQR Capping":
-
-        treated_df[box_feature] = (
-            treated_df[box_feature]
-            .clip(lower, upper)
-        )
-
-        st.success(
-            f"IQR Capping applied to {box_feature}"
-        )
-
-    elif treatment == "Percentile Capping (1%-99%)":
-
-        lower = treated_df[
-            box_feature
-        ].quantile(0.01)
-
-        upper = treated_df[
-            box_feature
-        ].quantile(0.99)
-
-        treated_df[box_feature] = (
-            treated_df[box_feature]
-            .clip(lower, upper)
-        )
-
-        st.success(
-            f"Percentile Capping applied to {box_feature}"
-        )
-
-    elif treatment == "Log Transformation":
-
-        if (treated_df[box_feature] < 0).any():
-            st.error(
-                "Log transformation cannot be applied to negative values."
-            )
-        else:
-            treated_df[box_feature] = np.log1p(
-                treated_df[box_feature])
-
-            st.success(
-                f"Log Transformation applied to {box_feature}"
-            )
-
-    elif treatment == "Remove Outliers":
-
-        treated_df = treated_df[
-            (
-                treated_df[box_feature]
-                >= lower
-            )
-            &
-            (
-                treated_df[box_feature]
-                <= upper
-            )
-        ]
-
-        st.success(
-            f"Outliers removed from {box_feature}"
-        )
-
-    st.session_state["df"] = treated_df
-    st.rerun()
-    df = treated_df
+        treated_df = df.copy()
     
+        Q1 = treated_df[box_feature].quantile(0.25)
+        Q3 = treated_df[box_feature].quantile(0.75)
+    
+        IQR = Q3 - Q1
+    
+         if IQR == 0:
+        st.warning(
+            "Selected feature has no variation."
+        )
+    
+        lower = Q1 - 1.5 * IQR
+        upper = Q3 + 1.5 * IQR
+    
+        if treatment == "IQR Capping":
+    
+            treated_df[box_feature] = (
+                treated_df[box_feature]
+                .clip(lower, upper)
+            )
+            st.success(
+                f"IQR Capping applied to {box_feature}"
+            )
+    
+        elif treatment == "Percentile Capping (1%-99%)":
+            lower = treated_df[
+                box_feature
+            ].quantile(0.01)
+            upper = treated_df[
+                box_feature
+            ].quantile(0.99)
+            treated_df[box_feature] = (
+                treated_df[box_feature]
+                .clip(lower, upper)
+            )
+            st.success(
+                f"Percentile Capping applied to {box_feature}"
+            )
+    
+        elif treatment == "Log Transformation":
+    
+            if (treated_df[box_feature] < 0).any():
+                st.error(
+                    "Log transformation cannot be applied to negative values."
+                )
+            else:
+                treated_df[box_feature] = np.log1p(
+                    treated_df[box_feature])
+    
+                st.success(
+                    f"Log Transformation applied to {box_feature}"
+                )
+    
+        elif treatment == "Remove Outliers":
+    
+            treated_df = treated_df[
+                (
+                    treated_df[box_feature]
+                    >= lower
+                )
+                &
+                (
+                    treated_df[box_feature]
+                    <= upper
+                )
+            ]
+    
+            st.success(
+                f"Outliers removed from {box_feature}"
+            )
+    
+        st.session_state["df"] = treated_df
+        st.rerun()
+        df = treated_df
+        
     st.write(
         "Updated Dataset Shape:",
         treated_df.shape
