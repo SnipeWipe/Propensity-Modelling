@@ -1,5 +1,7 @@
 # Customer Acquisition Risk & Propensity Modeling Platform
 
+## App Link - https://propensity-modelling-aypi2m9hwzdvcwdhyf48eb.streamlit.app/
+
 ## Overview
 
 The Customer Acquisition Risk & Propensity Modeling Platform is an end-to-end Machine Learning application built using Streamlit for customer propensity prediction, model explainability, monitoring, governance, and business decision support.
