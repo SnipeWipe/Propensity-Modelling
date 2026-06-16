@@ -14,10 +14,12 @@ st.markdown("""
 
 - Data Quality Analysis
 - Model Training
+- WOE IV Analysis
 - Model Explainability
 - Customer Scoring
 - Model Monitoring
-- Best Model Hyperparameter Tuning  
+- Best Model Hyperparameter Tuning 
+- Business Insights
 """)
 
 import pandas as pd
