@@ -243,6 +243,19 @@ if len(num_cols) > 0:
 else:
     st.warning("No numeric columns available for outlier analysis.")
 
+st.subheader("Outlier Treatment")
+
+treatment = st.selectbox(
+    "Select Treatment Method",
+    [
+        "None",
+        "IQR Capping",
+        "Percentile Capping (1%-99%)",
+        "Log Transformation",
+        "Remove Outliers"
+    ]
+)
+
 cat_cols = df.select_dtypes(
     exclude="number"
 ).columns
@@ -264,19 +277,6 @@ if len(cat_cols) > 0:
         ax=ax
     )
     st.pyplot(fig)
-
-st.subheader("Outlier Treatment")
-
-treatment = st.selectbox(
-    "Select Treatment Method",
-    [
-        "None",
-        "IQR Capping",
-        "Percentile Capping (1%-99%)",
-        "Log Transformation",
-        "Remove Outliers"
-    ]
-)
     
 missing_df = pd.DataFrame({
     "Column": df.columns,
