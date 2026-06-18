@@ -424,3 +424,6 @@ Track models through governance registry.
 **Akhilesh Pal**
 
 Data Science | Machine Learning | Credit Risk Analytics | MLOps
+
+GitHub: https://github.com/SnipeWipe
+Resume: https://acesse.one/oavhgh8
