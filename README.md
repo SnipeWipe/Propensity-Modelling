@@ -424,9 +424,3 @@ Track models through governance registry.
 **Akhilesh Pal**
 
 Data Science | Machine Learning | Credit Risk Analytics | MLOps
-
----
-
-## License
-
-This project is licensed under the MIT License.
