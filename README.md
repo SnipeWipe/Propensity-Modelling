@@ -1,6 +1,6 @@
 # Customer Acquisition Risk & Propensity Modeling Platform
 
-## App Link - https://propensity-modelling-aypi2m9hwzdvcwdhyf48eb.streamlit.app/
+## App Link - [Link](https://propensity-modelling-aypi2m9hwzdvcwdhyf48eb.streamlit.app/)
 
 ## Overview
 
